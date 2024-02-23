@@ -27,8 +27,8 @@ sed -i "s/OpenWrt /Deng Build $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" package
 # Modify default IP（FROM 192.168.1.1 CHANGE TO 10.10.10.1）
 sed -i 's/192.168.1.1/10.10.10.1/g' package/base-files/files/bin/config_generate
 
-# Modify system hostname（FROM OpenWrt CHANGE TO OpenWrt-N1）
-# sed -i 's/OpenWrt/OpenWrt-N1/g' package/base-files/files/bin/config_generate
+echo '修改机器名称'
+sed -i 's/OpenWrt/Phicomm-N1/g' package/base-files/files/bin/config_generate
 
 # Replace the default software source
 # sed -i 's#openwrt.proxy.ustclug.org#mirrors.bfsu.edu.cn\\/openwrt#' package/lean/default-settings/files/zzz-default-settings
@@ -37,6 +37,11 @@ sed -i 's/invalid users = root/#invalid users = root/g' feeds/packages/net/samba
 
 # 修复部分插件自启动脚本丢失可执行权限问题
 sed -i '/exit 0/i\chmod +x /etc/init.d/*' package/lean/default-settings/files/zzz-default-settings
+
+echo '修改时区'
+sed -i "s/'UTC'/'CST-8'\n   set system.@system[-1].zonename='Asia\/Shanghai'/g" package/base-files/files/bin/config_generate
+# firewall custom
+echo "iptables -t nat -I POSTROUTING -o pppoe-WAN -j MASQUERADE" >> package/network/config/firewall/files/firewall.user
 
 # 拉取软件包
 
